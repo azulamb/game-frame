@@ -30,7 +30,7 @@ interface GameFramePressButtonEvent extends CustomEvent {
     :host > div { display: grid; grid-template-rows: minmax(0, 2fr) minmax(0, 1fr); width: 100%; height: 100%; }
     canvas { display: block; width: 100%; height: 100%; min-width: 0; min-height: 0; image-rendering: pixelated; object-fit: contain; object-position: center; }
     .controller-area { display: grid; place-items: center; min-width: 0; min-height: 0; container-type: size; }
-    .controller { width: min(100cqw, 100cqh); aspect-ratio: 1 / 1; overflow: hidden; position: relative; border: calc(var(--button-line-width) * 2) solid var(--button-line-color); border-radius: 16px; }
+    .controller { width: min(100cqw, 100cqh); aspect-ratio: 1 / 1; overflow: hidden; position: relative; border: calc(var(--button-line-width) * 2) solid var(--button-line-color); border-radius: 16px; box-sizing: border-box; }
     .controller > div { width: 100%; height: 100%; position: absolute; }
     :host(:not([dpad="8"])) .controller > div {
       display: grid;

@@ -10,8 +10,43 @@
         const game = document.getElementById('game');
         const canvas = game.getCanvas();
         const context = canvas.getContext('2d');
-        context.fillStyle = 'gray';
-        context.fillRect(0, 0, canvas.width, canvas.height);
+        const width = canvas.width / 20 - 1;
+        const height = canvas.height / 20 - 1;
+        let x = Math.floor(width / 2);
+        let y = Math.floor(height / 2);
+        function render() {
+          context.fillStyle = 'gray';
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          context.fillStyle = 'yellow';
+          context.fillRect(x * 20 + 10, y * 20 + 10, 20, 20);
+        }
+        game.addEventListener('press', (event) => {
+          let nx = x;
+          let ny = y;
+          switch (event.detail.direction) {
+            case 1: // up
+              --ny;
+              break;
+            case 2: // right
+              ++nx;
+              break;
+            case 4: // down
+              ++ny;
+              break;
+            case 8: // left
+              --nx;
+              break;
+          }
+          // Update position if it's within bounds
+          if (0 <= nx && nx < width) {
+            x = nx;
+          }
+          if (0 <= ny && ny < height) {
+            y = ny;
+          }
+          render();
+        });
+        render();
       });
     </script>
     <style>html, body { margin: 0; padding: 0; }html { height: 100%; }body { width: 100%; height: 100%; }</style>
