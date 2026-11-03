@@ -5,45 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>game-frame sample</title>
     <script src="./game-frame.js" defer></script>
+    <script src="./game-dpad.js" defer></script>
     <script>
-      customElements.whenDefined('game-frame').then(() => {
-        const game = document.getElementById('game');
+      Promise.all([
+        customElements.whenDefined('game-frame'),
+        customElements.whenDefined('game-dpad'),
+      ]).then(() => {
+        return [
+          document.getElementById('game'),
+          document.getElementById('dpad'),
+        ];
+      }).then(([game, dpad]) => {
         const canvas = game.getCanvas();
         const context = canvas.getContext('2d');
         const width = canvas.width / 20 - 1;
         const height = canvas.height / 20 - 1;
         let x = Math.floor(width / 2);
         let y = Math.floor(height / 2);
+        let chara = 'yellow';
+        let circle = false;
         function render() {
           context.fillStyle = 'gray';
           context.fillRect(0, 0, canvas.width, canvas.height);
-          context.fillStyle = 'yellow';
-          context.fillRect(x * 20 + 10, y * 20 + 10, 20, 20);
+          context.fillStyle = chara;
+          if (circle) {
+            context.beginPath();
+            context.arc(x * 20 + 20, y * 20 + 20, 10, 0, Math.PI * 2);
+            context.fill();
+          } else {
+            context.fillRect(x * 20 + 10, y * 20 + 10, 20, 20);
+          }
         }
-        game.addEventListener('press', (event) => {
+
+        dpad.addEventListener('press', (event) => {
           let nx = x;
           let ny = y;
-          switch (event.detail.direction) {
-            case 1: // up
+          switch (event.detail.key) {
+            case 'up':
               --ny;
               break;
-            case 2: // right
+            case 'right':
               ++nx;
               break;
-            case 4: // down
+            case 'down':
               ++ny;
+                break;
+            case 'left':
+                --nx;
+                break;
+            case 'confirmed':
+              chara = 'green';
               break;
-            case 8: // left
-              --nx;
+            case 'cancelable':
+              chara = 'yellow';
+              break;
+            case 'l':
+            case 'r':
+              circle = !circle;
               break;
           }
-          // Update position if it's within bounds
+
           if (0 <= nx && nx < width) {
             x = nx;
           }
           if (0 <= ny && ny < height) {
             y = ny;
           }
+
           render();
         });
         render();
@@ -52,6 +80,8 @@
     <style>html, body { margin: 0; padding: 0; }html { height: 100%; }body { width: 100%; height: 100%; }</style>
   </head>
   <body>
-    <game-frame id="game"></game-frame>
+    <game-frame id="game">
+      <game-dpad id="dpad"></game-dpad>
+    </game-frame>
   </body>
 </html>

@@ -9,5 +9,5 @@
     "strict": true,
     "noEmitOnError": true
   },
-  "files": ["game-frame.ts"]
+  "files": ["game-frame.ts", "game-dpad.ts"]
 }
