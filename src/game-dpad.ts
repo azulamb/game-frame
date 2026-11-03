@@ -67,6 +67,13 @@ type GameDpadPressButtonDetail = {
     detail[key] = true;
     return detail;
   }
+  function createButton() {
+    const button = document.createElement('button');
+    button.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+    });
+    return button;
+  }
 
   customElements.define(
     tagName,
@@ -81,22 +88,22 @@ type GameDpadPressButtonDetail = {
             button.classList.add('up');
             button.addEventListener('click', this.dispatchDirectionButtonEventFunc('up', 1));
             return button;
-          })(document.createElement('button')));
+          })(createButton()));
           controller.appendChild(((button) => {
             button.classList.add('right');
             button.addEventListener('click', this.dispatchDirectionButtonEventFunc('right', 2));
             return button;
-          })(document.createElement('button')));
+          })(createButton()));
           controller.appendChild(((button) => {
             button.classList.add('down');
             button.addEventListener('click', this.dispatchDirectionButtonEventFunc('down', 4));
             return button;
-          })(document.createElement('button')));
+          })(createButton()));
           controller.appendChild(((button) => {
             button.classList.add('left');
             button.addEventListener('click', this.dispatchDirectionButtonEventFunc('left', 8));
             return button;
-          })(document.createElement('button')));
+          })(createButton()));
           return controller;
         })(document.createElement('div')));
         const confirmed = ((button) => {
@@ -104,23 +111,30 @@ type GameDpadPressButtonDetail = {
           button.setAttribute('aria-label', '決定');
           button.addEventListener('click', this.dispatchButtonEventFunc('confirmed'));
           return button;
-        })(document.createElement('button'));
+        })(createButton());
         const cancelable = ((button) => {
           button.classList.add('cancelable');
           button.setAttribute('aria-label', 'キャンセル');
           button.addEventListener('click', this.dispatchButtonEventFunc('cancelable'));
           return button;
-        })(document.createElement('button'));
+        })(createButton());
+        const l = ((button) => {
+          button.classList.add('l');
+          button.setAttribute('aria-label', 'L');
+          button.addEventListener('click', this.dispatchButtonEventFunc('l'));
+          return button;
+        })(createButton());
+        const r = ((button) => {
+          button.classList.add('r');
+          button.setAttribute('aria-label', 'R');
+          button.addEventListener('click', this.dispatchButtonEventFunc('r'));
+          return button;
+        })(createButton());
 
         const wrapper = document.createElement('div');
         wrapper.classList.add('controller-area');
-        for (const key of ['l', 'r'] as const) {
-          const button = document.createElement('button');
-          button.classList.add(key);
-          button.setAttribute('aria-label', key.toUpperCase());
-          button.addEventListener('click', this.dispatchButtonEventFunc(key));
-          wrapper.appendChild(button);
-        }
+        wrapper.appendChild(l);
+        wrapper.appendChild(r);
         wrapper.appendChild(cancelable);
         wrapper.appendChild(controller);
         wrapper.appendChild(confirmed);
