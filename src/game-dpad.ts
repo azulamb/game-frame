@@ -32,7 +32,7 @@ type GameDpadPressButtonDetail = {
     .controller { grid-column: 2; grid-row: 1 / 3; width: min(100%, 100cqh); aspect-ratio: 1 / 1; overflow: hidden; position: relative; border: calc(var(--button-line-width) * 2) solid var(--button-line-color); border-radius: 16px; box-sizing: border-box; }
     .controller > div { width: 100%; height: 100%; position: absolute; }
     :host(:not([dpad="8"])) .controller > div { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; grid-template-areas: "up right" "left down"; inset: 0; transform-origin: center; transform: rotate(45deg) scale(1.4142135623730951); }
-    button { display: block; cursor: pointer; user-select: none; box-sizing: border-box; width: 100%; height: 100%; border: var(--button-line-width) solid var(--button-line-color); outline: none; padding: 0; margin: 0; }
+    button { display: block; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; box-sizing: border-box; width: 100%; height: 100%; border: var(--button-line-width) solid var(--button-line-color); outline: none; padding: 0; margin: 0; }
     .controller-area > button { grid-row: 2; width: min(100%, 50cqh); height: auto; aspect-ratio: 1 / 1; border-radius: 16px; position: relative; border: calc(var(--button-line-width) * 2) solid var(--button-line-color); }
     .cancelable, .l { grid-column: 1; }
     .confirmed, .r { grid-column: 3; }
