@@ -37,6 +37,9 @@
     .down { grid-area: down; }
     .left { grid-area: left; }
     .right { grid-area: right; }
+    dialog { padding: 0; background: transparent; border: none; }
+    dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
+    dialog > div { background: #fff; border-radius: 16px; padding: 16px; }
   `);
     function createGameDpadPressButtonDetail(key, direction = 0) {
         const detail = {
@@ -120,9 +123,37 @@
             wrapper.appendChild(cancelable);
             wrapper.appendChild(controller);
             wrapper.appendChild(confirmed);
+            this.dialog = document.createElement('dialog');
+            this.dialog.appendChild(((wrapper) => {
+                wrapper.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                });
+                return wrapper;
+            })(document.createElement('div')));
             const shadow = this.attachShadow({ mode: 'open' });
             shadow.adoptedStyleSheets = [sheet];
             shadow.appendChild(wrapper);
+            shadow.appendChild(this.dialog);
+        }
+        showKeyConfig() {
+            return new Promise((resolve, reject) => {
+                if (this.dialog.open) {
+                    reject(new Error('Key configuration is already open.'));
+                    return;
+                }
+                this.dialog.showModal();
+                const onClose = () => {
+                    this.dialog.removeEventListener('click', onBackdropClick);
+                    this.dialog.removeEventListener('close', onClose);
+                    reject(new DOMException('Key configuration was canceled.', 'AbortError'));
+                };
+                const onBackdropClick = (event) => {
+                    this.dialog.close();
+                };
+                this.dialog.addEventListener('click', onBackdropClick);
+                this.dialog.addEventListener('close', onClose);
+            });
         }
         dispatchButtonEventFunc(key) {
             return (event) => {
