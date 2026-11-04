@@ -5,7 +5,9 @@ interface GameFrameElement extends HTMLElement {
 ((script) => {
   const tagName = script.getAttribute('game-frame-name') ?? 'game-frame';
   if (customElements.get(tagName)) {
-    return Promise.reject(new Error(`Custom element with name "${tagName}" already exists.`));
+    return Promise.reject(
+      new Error(`Custom element with name "${tagName}" already exists.`),
+    );
   }
   if (document.readyState !== 'loading') {
     return Promise.resolve(tagName);
@@ -33,8 +35,12 @@ interface GameFrameElement extends HTMLElement {
         super();
 
         this.canvas = document.createElement('canvas');
-        this.canvas.width = this.getAttribute('width') ? parseInt(this.getAttribute('width')!) : 160;
-        this.canvas.height = this.getAttribute('height') ? parseInt(this.getAttribute('height')!) : 200;
+        this.canvas.width = this.getAttribute('width')
+          ? parseInt(this.getAttribute('width')!)
+          : 160;
+        this.canvas.height = this.getAttribute('height')
+          ? parseInt(this.getAttribute('height')!)
+          : 200;
 
         const controller = document.createElement('div');
         controller.classList.add('controller-area');
