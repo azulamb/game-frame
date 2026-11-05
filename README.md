@@ -2,8 +2,8 @@
 
 ## Samples
 
-- [Basic sample](docs/index.html)
-- [Wire dungeon](docs/dungeon.html)
+- [Basic sample](https://azulamb.github.io/game-frame/)
+- [Wire dungeon](https://azulamb.github.io/game-frame/dungeon.html)
 
 ## Build
 
