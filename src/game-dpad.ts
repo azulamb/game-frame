@@ -110,8 +110,6 @@ type GameDpadPressButtonDetail = {
     button.addEventListener('contextmenu', (event) => {
       event.preventDefault();
     });
-    // Cancel native long-press handling before the contextmenu event is reached.
-    // Touch input dispatches directly because preventDefault also suppresses click.
     button.addEventListener('touchstart', (event) => {
       event.preventDefault();
       onPress(event);

@@ -18,6 +18,7 @@
       }).then(([game, dpad]) => {
         const canvas = game.getCanvas();
         const context = canvas.getContext('2d');
+        context.imageSmoothingEnabled = false;
         const width = canvas.width / 20 - 1;
         const height = canvas.height / 20 - 1;
         let x = Math.floor(width / 2);
