@@ -419,8 +419,8 @@ type GameDpadPressButtonDetail = {
           this.dispatchEvent(
             new CustomEvent('press', {
               detail: detail,
-              bubbles: true,
-              composed: true,
+              bubbles: false,
+              composed: false,
             }),
           );
         };

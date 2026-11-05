@@ -30,6 +30,17 @@
             this.canvas.height = this.getAttribute('height')
                 ? parseInt(this.getAttribute('height'))
                 : 200;
+            this.canvas.addEventListener('click', (event) => {
+                const detail = this.calcClickPosition(event);
+                if (!detail) {
+                    return;
+                }
+                this.dispatchEvent(new CustomEvent('press', {
+                    detail,
+                    bubbles: true,
+                    composed: true,
+                }));
+            });
             const controller = document.createElement('div');
             controller.classList.add('controller-area');
             controller.appendChild(document.createElement('slot'));
@@ -42,6 +53,33 @@
         }
         getCanvas() {
             return this.canvas;
+        }
+        calcClickPosition(event) {
+            const width = this.canvas.width;
+            const height = this.canvas.height;
+            const rect = this.canvas.getBoundingClientRect();
+            const WIDTH = rect.width;
+            const HEIGHT = rect.height;
+            if (width <= 0 || height <= 0 || WIDTH <= 0 || HEIGHT <= 0)
+                return null;
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            let position;
+            if (height / width < HEIGHT / WIDTH) {
+                const scale = width / WIDTH;
+                const h = (HEIGHT - WIDTH * height / width) / 2;
+                position = { x: x * scale, y: (y - h) * scale };
+            }
+            else {
+                const scale = height / HEIGHT;
+                const w = (WIDTH - HEIGHT * width / height) / 2;
+                position = { x: (x - w) * scale, y: y * scale };
+            }
+            // Ignore the empty space around the image created by object-fit: contain.
+            if (position.x < 0 || width <= position.x ||
+                position.y < 0 || height <= position.y)
+                return null;
+            return position;
         }
     });
 });

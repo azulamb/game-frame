@@ -24,6 +24,8 @@
         let y = Math.floor(height / 2);
         let chara = 'yellow';
         let circle = false;
+        let touchX = 0;
+        let touchY = 0;
         function render() {
           context.fillStyle = 'gray';
           context.fillRect(0, 0, canvas.width, canvas.height);
@@ -35,7 +37,17 @@
           } else {
             context.fillRect(x * 20 + 10, y * 20 + 10, 20, 20);
           }
+          context.fillStyle = 'white';
+          context.font = '10px sans-serif';
+          context.fillText(`(${touchX}, ${touchY})`, 0, 10);
         }
+
+        game.addEventListener('press', (event) => {
+          const { x, y } = event.detail;
+          touchX = Math.floor(x);
+          touchY = Math.floor(y);
+          render();
+        });
 
         document.getElementById('config').addEventListener('click', () => {
           dpad.showKeyConfig().then(() => {
