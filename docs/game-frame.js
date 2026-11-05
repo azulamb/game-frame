@@ -24,8 +24,12 @@
         constructor() {
             super();
             this.canvas = document.createElement('canvas');
-            this.canvas.width = this.getAttribute('width') ? parseInt(this.getAttribute('width')) : 160;
-            this.canvas.height = this.getAttribute('height') ? parseInt(this.getAttribute('height')) : 200;
+            this.canvas.width = this.getAttribute('width')
+                ? parseInt(this.getAttribute('width'))
+                : 160;
+            this.canvas.height = this.getAttribute('height')
+                ? parseInt(this.getAttribute('height'))
+                : 200;
             const controller = document.createElement('div');
             controller.classList.add('controller-area');
             controller.appendChild(document.createElement('slot'));

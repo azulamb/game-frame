@@ -200,6 +200,8 @@ type GameDpadPressButtonDetail = {
         wrapper.appendChild(confirmed);
 
         this.dialog = document.createElement('dialog');
+        this.dialog.id = 'key-config-dialog';
+        this.dialog.setAttribute('closedby', 'any');
         this.dialog.setAttribute('aria-labelledby', 'key-config-title');
 
         const shadow = this.attachShadow({ mode: 'open' });
@@ -333,21 +335,19 @@ type GameDpadPressButtonDetail = {
           actions.className = 'key-config-actions';
           const cancel = makeButton('Cancel');
           const confirm = makeButton('Confirm');
-          let accepted = false;
-          cancel.addEventListener('click', () => this.dialog.close());
-          confirm.addEventListener('click', () => {
-            accepted = true;
-            this.dialog.close();
-          });
+          cancel.setAttribute('commandfor', this.dialog.id);
+          cancel.setAttribute('command', 'request-close');
+          cancel.value = 'cancel';
+          confirm.setAttribute('commandfor', this.dialog.id);
+          confirm.setAttribute('command', 'close');
+          confirm.value = 'confirm';
           actions.append(cancel, confirm);
           panel.append(title, main, actions);
           this.dialog.replaceChildren(panel);
           const onClose = () => {
             stopCapture?.();
-            this.dialog.removeEventListener('click', onBackdropClick);
-            this.dialog.removeEventListener('close', onClose);
             this.keyConfigPending = false;
-            if (accepted) {
+            if (this.dialog.returnValue === 'confirm') {
               this.keyConfig = draft;
               resolve();
             } else {
@@ -359,13 +359,10 @@ type GameDpadPressButtonDetail = {
               );
             }
           };
-          const onBackdropClick = (event: MouseEvent) => {
-            if (event.target === this.dialog) this.dialog.close();
-          };
+          this.dialog.returnValue = '';
           this.dialog.showModal();
           this.keyConfigPending = true;
-          this.dialog.addEventListener('click', onBackdropClick);
-          this.dialog.addEventListener('close', onClose);
+          this.dialog.addEventListener('close', onClose, { once: true });
         });
       }
 

@@ -108,17 +108,26 @@
                 KeyE: 'r',
             };
             this.onKeyDown = (event) => {
-                if (event.defaultPrevented || event.isComposing || event.ctrlKey || event.altKey || event.metaKey || this.dialog.open) {
+                if (event.defaultPrevented || event.isComposing || event.ctrlKey ||
+                    event.altKey || event.metaKey || this.dialog.open) {
                     return;
                 }
-                if (event.composedPath().some((target) => target instanceof HTMLElement && (target.isContentEditable || target.matches('input, textarea, select')))) {
+                if (event.composedPath().some((target) => target instanceof HTMLElement && (target.isContentEditable ||
+                    target.matches('input, textarea, select')))) {
                     return;
                 }
-                const key = Object.prototype.hasOwnProperty.call(this.keyConfig, event.code) ? this.keyConfig[event.code] : undefined;
+                const key = Object.prototype.hasOwnProperty.call(this.keyConfig, event.code)
+                    ? this.keyConfig[event.code]
+                    : undefined;
                 if (!key) {
                     return;
                 }
-                const directions = { up: 1, right: 2, down: 4, left: 8 };
+                const directions = {
+                    up: 1,
+                    right: 2,
+                    down: 4,
+                    left: 8,
+                };
                 this.dispatchButtonEventFunc(key, directions[key] ?? 0)(event);
             };
             const controller = document.createElement('div');
@@ -170,6 +179,8 @@
             wrapper.appendChild(controller);
             wrapper.appendChild(confirmed);
             this.dialog = document.createElement('dialog');
+            this.dialog.id = 'key-config-dialog';
+            this.dialog.setAttribute('closedby', 'any');
             this.dialog.setAttribute('aria-labelledby', 'key-config-title');
             const shadow = this.attachShadow({ mode: 'open' });
             shadow.adoptedStyleSheets = [sheet];
@@ -184,8 +195,14 @@
                 }
                 const draft = { ...this.keyConfig };
                 const labels = {
-                    up: 'Up', right: 'Right', down: 'Down', left: 'Left',
-                    confirmed: 'Confirmed', cancelable: 'Cancel', l: 'L', r: 'R',
+                    up: 'Up',
+                    right: 'Right',
+                    down: 'Down',
+                    left: 'Left',
+                    confirmed: 'Confirmed',
+                    cancelable: 'Cancel',
+                    l: 'L',
+                    r: 'R',
                 };
                 const panel = document.createElement('div');
                 panel.className = 'key-config';
@@ -236,7 +253,8 @@
                         }
                         stopCapture?.();
                         add.setAttribute('aria-pressed', 'true');
-                        status.textContent = 'Press the key you want to register (Press Tab to cancel).';
+                        status.textContent =
+                            'Press the key you want to register (Press Tab to cancel).';
                         const onCapture = (event) => {
                             if (event.key === 'Tab') {
                                 stopCapture?.();
@@ -244,13 +262,18 @@
                             }
                             event.preventDefault();
                             event.stopPropagation();
-                            if (event.isComposing || event.repeat || !event.code || event.code === 'Unidentified')
+                            if (event.isComposing || event.repeat || !event.code ||
+                                event.code === 'Unidentified')
                                 return;
-                            if (event.ctrlKey || event.altKey || event.metaKey || /^(Shift|Control|Alt|Meta)/.test(event.code)) {
-                                status.textContent = 'Combinations with modifier keys cannot be registered. Please press another key.';
+                            if (event.ctrlKey || event.altKey || event.metaKey ||
+                                /^(Shift|Control|Alt|Meta)/.test(event.code)) {
+                                status.textContent =
+                                    'Combinations with modifier keys cannot be registered. Please press another key.';
                                 return;
                             }
-                            const assigned = Object.prototype.hasOwnProperty.call(draft, event.code) ? draft[event.code] : undefined;
+                            const assigned = Object.prototype.hasOwnProperty.call(draft, event.code)
+                                ? draft[event.code]
+                                : undefined;
                             if (assigned && assigned !== key) {
                                 status.textContent = `${event.code} is already assigned to "${labels[assigned]}". Please remove it first.`;
                                 return;
@@ -282,21 +305,19 @@
                 actions.className = 'key-config-actions';
                 const cancel = makeButton('Cancel');
                 const confirm = makeButton('Confirm');
-                let accepted = false;
-                cancel.addEventListener('click', () => this.dialog.close());
-                confirm.addEventListener('click', () => {
-                    accepted = true;
-                    this.dialog.close();
-                });
+                cancel.setAttribute('commandfor', this.dialog.id);
+                cancel.setAttribute('command', 'request-close');
+                cancel.value = 'cancel';
+                confirm.setAttribute('commandfor', this.dialog.id);
+                confirm.setAttribute('command', 'close');
+                confirm.value = 'confirm';
                 actions.append(cancel, confirm);
                 panel.append(title, main, actions);
                 this.dialog.replaceChildren(panel);
                 const onClose = () => {
                     stopCapture?.();
-                    this.dialog.removeEventListener('click', onBackdropClick);
-                    this.dialog.removeEventListener('close', onClose);
                     this.keyConfigPending = false;
-                    if (accepted) {
+                    if (this.dialog.returnValue === 'confirm') {
                         this.keyConfig = draft;
                         resolve();
                     }
@@ -304,14 +325,10 @@
                         reject(new DOMException('Key configuration was canceled.', 'AbortError'));
                     }
                 };
-                const onBackdropClick = (event) => {
-                    if (event.target === this.dialog)
-                        this.dialog.close();
-                };
+                this.dialog.returnValue = '';
                 this.dialog.showModal();
                 this.keyConfigPending = true;
-                this.dialog.addEventListener('click', onBackdropClick);
-                this.dialog.addEventListener('close', onClose);
+                this.dialog.addEventListener('close', onClose, { once: true });
             });
         }
         connectedCallback() {
