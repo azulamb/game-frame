@@ -75,7 +75,6 @@
                 const w = (WIDTH - HEIGHT * width / height) / 2;
                 position = { x: (x - w) * scale, y: y * scale };
             }
-            // Ignore the empty space around the image created by object-fit: contain.
             if (position.x < 0 || width <= position.x ||
                 position.y < 0 || height <= position.y)
                 return null;
