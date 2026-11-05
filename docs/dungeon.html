@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WIRE DUNGEON — game-frame sample</title>
+    <script src="./game-frame.js" defer></script>
+    <script src="./game-dpad.js" defer></script>
+    <script src="./dungeon.js" defer></script>
+    <style>
+      html, body { margin: 0; width: 100%; height: 100%; background: #000; color: #fff; }
+      body { height: 100dvh; font-family: monospace; }
+      game-frame { max-width: 960px; margin: auto; }
+      game-dpad { color-scheme: dark; --button-line-color: #fff; }
+    </style>
+  </head>
+  <body>
+    <game-frame id="game" width="400" height="500">
+      <game-dpad id="dpad"></game-dpad>
+    </game-frame>
+  </body>
+</html>
