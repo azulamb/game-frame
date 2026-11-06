@@ -109,8 +109,8 @@ Promise.all([
     const explored = visited.flat().filter(Boolean).length;
     const total = map.flat().filter(tile => tile === 0).length;
     text(`探索 ${explored} / ${total}${explored === total ? '  COMPLETE!' : ''}`, 16, 442, 14);
-    text(message || '↑↓ 前後移動  ←→ 平行移動', 200, 468, 15, 'center');
-    text('L/R 旋回', 200, 490, 14, 'center');
+    text(message || '↑↓ 前後移動  ←→ 旋回', 200, 468, 15, 'center');
+    text('L/R 横歩き', 200, 490, 14, 'center');
     text('× タイトル', 384, 442, 14, 'right');
   }
   function render() {
@@ -148,9 +148,9 @@ Promise.all([
     } else {
       message = '';
       if (key === 'cancelable') { screen = 'title'; selection = 0; }
-      else if (key === 'l' || key === 'r') facing = (facing + (key === 'l' ? 3 : 1)) % 4;
+      else if (key === 'left' || key === 'right') facing = (facing + (key === 'left' ? 3 : 1)) % 4;
       else {
-        const relative = { up: 0, right: 1, down: 2, left: 3 }[key];
+        const relative = { up: 0, r: 1, down: 2, l: 3 }[key];
         if (relative !== undefined) {
           const [dx, dy] = DIRECTIONS[(facing + relative) % 4];
           if (map[y + dy]?.[x + dx] === 0) {
